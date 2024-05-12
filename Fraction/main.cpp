@@ -1,4 +1,4 @@
-// Fraction
+﻿// Fraction
 #include<iostream>
 using namespace std;
 
