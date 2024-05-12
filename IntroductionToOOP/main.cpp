@@ -109,6 +109,7 @@ double distance(const Point& A, const Point& B)
 //#define DISTANCE_CHECK
 //#define LIFETIME
 //#define CONSTRUCTORS_CHECK
+//#define ASSIGNMENT_CHECK
 
 void main()
 {
@@ -198,6 +199,7 @@ void main()
 	D.Print();
 #endif // CONSTRUCTORS_CHECK
 
+#ifdef ASSIGNMENT_CHECK
 	//Point A(2, 3);
 	//Point B = A; // CopyConstructor
 	//Point B;
@@ -215,7 +217,7 @@ void main()
 	/*
 	Point(2, 3); здесь явно вызывается конструктор и создаётся временный безымянный объект
 	*/
-
+#endif
 }
 
 
