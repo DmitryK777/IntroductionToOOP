@@ -86,7 +86,8 @@ public:
 
 	Fraction& operator++() // Preffix increment
 	{
-		++this->integer;
+		if (this->integer == 0 && this->numerator < 0) this->numerator = this->denominator - this->numerator;
+		else ++this->integer;
 		return *this;
 	}
 
@@ -94,7 +95,8 @@ public:
 	{
 		Fraction old = *this;
 
-		this->integer++;
+		if (this->integer == 0 && this->numerator < 0) this->numerator = this->denominator - this->numerator;
+		else this->integer++;
 
 		return old;
 	}
