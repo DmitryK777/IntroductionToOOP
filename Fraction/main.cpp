@@ -8,6 +8,7 @@ using std::cout;
 using std::endl;
 
 class Fraction;
+void reduce_numbers(int& numerator, int& denominator);
 Fraction operator*(Fraction left, Fraction right);
 Fraction operator/(const Fraction& left, const Fraction& right);
 
@@ -40,12 +41,46 @@ public:
 		cout << "DefaultConstructor:\t" << this << endl;
 	}
 
-	Fraction(int integer)
+	explicit Fraction(int integer)
 	{
 		this->integer = integer;
 		this->numerator = 0;
 		this->denominator = 1;
 		cout << "1ArgConstructor:\t" << this << endl;
+	}
+
+	explicit Fraction(double number)
+	{
+		this->integer = (int)number;
+		double decimal = (number - this->integer);
+		int decimal_count = 0;
+		int buffer = decimal;
+		while (buffer != decimal)
+		{
+			decimal *= 10;
+			buffer = (int)decimal;
+			decimal_count++;
+		}
+		this->numerator = decimal;
+
+		this->denominator = 1;
+		for (int i = 0; i < decimal_count; i++) this->denominator *= 10;
+		
+		/*
+		int more, less, rest;
+		more = denominator, less = numerator;
+		do
+		{
+			rest = more % less;
+			more = less;
+			less = rest;
+		} while (rest);
+		int GCD = more; // Greatest Common Divisor
+		this->numerator /= GCD;
+		this->denominator /= GCD;
+		*/
+
+		reduce_numbers(this->numerator, this->denominator);
 	}
 
 	Fraction(int numerator, int denominator)
@@ -108,6 +143,16 @@ public:
 	Fraction& operator/=(const Fraction& other)
 	{
 		return *this = *this / other;
+	}
+
+	explicit operator int()
+	{
+		return integer;
+	}
+
+	explicit operator double()
+	{
+		return ((double)integer + ((double)numerator/(double)denominator));
 	}
 
 /*
@@ -326,6 +371,7 @@ public:
 
 	Fraction& reduce()
 	{
+		/*
 		int more, less, rest;
 		if (numerator > denominator) more = numerator, less = denominator;
 		else more = denominator, less = numerator;
@@ -338,8 +384,12 @@ public:
 		int GCD = more; // Greatest Common Divisor
 		numerator /= GCD;
 		denominator /= GCD;
+		*/
+		reduce_numbers(this->numerator, this->denominator);
 		return *this;
 	}
+
+	
 
 	std::ostream& print(std::ostream& os = std::cout)const
 	{
@@ -351,10 +401,26 @@ public:
 			if (integer) os << ")";
 		}
 		else if (integer == 0) os << 0;
-		os << endl;
+		//os << endl;
 		return os;
 	}
 };
+
+void reduce_numbers(int& numerator, int& denominator)
+{
+	int more, less, rest;
+	if (numerator > denominator) more = numerator, less = denominator;
+	else more = denominator, less = numerator;
+	do
+	{
+		rest = more % less;
+		more = less;
+		less = rest;
+	} while (rest);
+	int GCD = more; // Greatest Common Divisor
+	numerator /= GCD;
+	denominator /= GCD;
+}
 
 /*
 Fraction operator+(const Fraction& left, const Fraction& right)
@@ -751,11 +817,12 @@ std::istream& operator>>(std::istream& is, Fraction& obj)
 	return is;
 }
 
-
-
 //#define CHECK_CONSTRUCTORS
 //#define ARITHMETICAL_OPERATORS_CHECK
 //#define COMPARISION_OPERATORS_CHECK
+//#define STREAM_CHECK
+//#define TYPE_CONVERSION
+#define HOME_WORK
 
 void main()
 {
@@ -859,7 +926,41 @@ void main()
 	cout << (Fraction(1,2) < Fraction(5, 2)) << endl;
 #endif
 
+#if defined STREAM_CHECK
 	Fraction A(1, 2, 3);
 	cout << "Введите простую дробь: "; cin >> A;
 	A.print();
+#endif
+
+#if defined TYPE_CONVERSION
+
+	int a = 2;
+	double b = 3;
+	int c = b;
+
+	Fraction A = (Fraction)5; // Conversion from 'int' to 'fraction'
+	cout << A << endl;
+
+	int d = (int)A;
+	cout << d << endl;
+
+	Fraction B;
+	B = Fraction(8);
+	cout << B << endl;
+#endif;
+
+#if defined HOME_WORK
+
+	Fraction A(2, 3, 4);
+	double a = (double)A;
+	cout << A << "=" << a << endl;
+	//cout << a << endl;
+
+	Fraction B = (Fraction)2.75;
+	cout << B << endl;
+
+
+
+#endif // HOME_WORK
+
 } 
