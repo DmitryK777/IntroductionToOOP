@@ -34,6 +34,11 @@ public:
 	{
 		this->line = line;
 	}
+
+	~String()
+	{
+		cout << "Destructor:\t\t" << this << endl;
+	}
 	
 	// Operators
 

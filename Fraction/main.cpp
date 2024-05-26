@@ -49,38 +49,15 @@ public:
 		cout << "1ArgConstructor:\t" << this << endl;
 	}
 
-	explicit Fraction(double number)
+	explicit Fraction(double decimal)
 	{
-		this->integer = (int)number;
-		double decimal = (number - this->integer);
-		int decimal_count = 0;
-		int buffer = decimal;
-		while (buffer != decimal)
-		{
-			decimal *= 10;
-			buffer = (int)decimal;
-			decimal_count++;
-		}
-		this->numerator = decimal;
-
-		this->denominator = 1;
-		for (int i = 0; i < decimal_count; i++) this->denominator *= 10;
+		decimal += 1e-10;
+		integer = decimal; // Сохраняем целую часть
+		denominator = 1e+9; // INT Полноценно можно использовать только 9 десятичных разрядов
+		decimal -= integer; // Убираем целую часть из десятичной дроби
+		numerator = decimal * denominator;
+		reduce();
 		
-		/*
-		int more, less, rest;
-		more = denominator, less = numerator;
-		do
-		{
-			rest = more % less;
-			more = less;
-			less = rest;
-		} while (rest);
-		int GCD = more; // Greatest Common Divisor
-		this->numerator /= GCD;
-		this->denominator /= GCD;
-		*/
-
-		reduce_numbers(this->numerator, this->denominator);
 	}
 
 	Fraction(int numerator, int denominator)
@@ -152,7 +129,7 @@ public:
 
 	explicit operator double()
 	{
-		return ((double)integer + ((double)numerator/(double)denominator));
+		return (integer + ((double)numerator/denominator));
 	}
 
 /*
@@ -371,7 +348,7 @@ public:
 
 	Fraction& reduce()
 	{
-		/*
+		
 		int more, less, rest;
 		if (numerator > denominator) more = numerator, less = denominator;
 		else more = denominator, less = numerator;
@@ -384,8 +361,7 @@ public:
 		int GCD = more; // Greatest Common Divisor
 		numerator /= GCD;
 		denominator /= GCD;
-		*/
-		reduce_numbers(this->numerator, this->denominator);
+		
 		return *this;
 	}
 
@@ -405,22 +381,6 @@ public:
 		return os;
 	}
 };
-
-void reduce_numbers(int& numerator, int& denominator)
-{
-	int more, less, rest;
-	if (numerator > denominator) more = numerator, less = denominator;
-	else more = denominator, less = numerator;
-	do
-	{
-		rest = more % less;
-		more = less;
-		less = rest;
-	} while (rest);
-	int GCD = more; // Greatest Common Divisor
-	numerator /= GCD;
-	denominator /= GCD;
-}
 
 /*
 Fraction operator+(const Fraction& left, const Fraction& right)
@@ -956,7 +916,7 @@ void main()
 	cout << A << "=" << a << endl;
 	//cout << a << endl;
 
-	Fraction B = (Fraction)2.75;
+	Fraction B = (Fraction)3.845;
 	cout << B << endl;
 
 
