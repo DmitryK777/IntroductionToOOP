@@ -33,34 +33,24 @@ public:
 	// Constructors
 	explicit String(int size = 80):size(size), str(new char[size]{})
 	{
-		//this->size = size;
-		//this->str = new char[size]{};
+		
 		cout << "DefaultConstructor:\t" << this << endl;
 	}
 
-	String(const char* str): size(strlen(str)+1), str(new char[size]{})
+	String(const char* str): String(strlen(str)+1)
 	{
-		//this->size = strlen(str) + 1;
-		//this->str = new char[size];
+		
 		for (int i = 0; str[i]; i++) this->str[i] = str[i];
 		cout << "1ArgConstructor:\t" << this << endl;
 	}
 
-	String(const String& other):size(other.size), str(new char[size]{})
+	String(const String& other):String(other.str)
 	{
-		//this->size = other.size;
-		//this->str = new char[size] {};
-		for (int i = 0; i < size; i++) this->str[i] = other.str[i];
 		cout << "CopyConstructor:\t" << this << endl;
 	}
 
 	String(String&& other):size(other.size), str(other.str)
 	{
-		// Shallow Copy
-		//this->size = other.size;
-		//this->str = other.str;
-		//MoveConstructor работает противоположно CopyConstructor
-
 		other.str = nullptr;
 		other.size = 0;
 		cout << "MoveConstructor:\t" << this << endl;
@@ -188,6 +178,7 @@ std::istream& operator>>(std::istream& is, String& obj)
 */
 
 //#define CONSTRUCTORS_CHECK
+//#define OPERATOR_PLUS_CHECK
 
 void main()
 {
@@ -208,7 +199,7 @@ void main()
 	cout << str3 << endl;
 #endif
 
-
+#if defined OPERATOR_PLUS_CHECK
 	String str1 = "Hello";
 	cout << str1 << endl;
 	String str2 = "World";
@@ -219,5 +210,11 @@ void main()
 	String str3; 
 	str3 = str1 + str2;
 	cout << str3 << endl;
+#endif
 
+	String str1 = "Delegation";
+	cout << "\n-----------------------------------------\n";
+	String str2 = str1;
+	cout << "\n-----------------------------------------\n";
+	cout << str2 << endl;
 }
