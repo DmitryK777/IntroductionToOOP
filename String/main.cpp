@@ -1,4 +1,4 @@
-// String
+﻿// String
 #include<iostream>
 
 using namespace std;
@@ -10,54 +10,111 @@ using std::endl;
 class String
 {
 private:
-	const char* line;
+	int size; // Размер строки в байтах
+	char* str; // Адрес строки в динамической памяти
 
 public:
-	const char* get_string()const { return line; }
-	void set_string(const char* arr) { this->line = line; }
-	void set_string(char* line) { this->line = line; }
-	
 
+	const char* get_str()const
+	{
+		return str;
+	}
+
+	char* get_str()
+	{
+		return str;
+	}
+
+	int get_size()const
+	{
+		return this->size;
+	}
+	
 	// Constructors
-	String()
+	explicit String(int size = 80)
 	{
-		const int SIZE = 80;
-		this->line[80];
+		this->size = size;
+		this->str = new char[size]{};
+		cout << "DefaultConstructor:\t" << this << endl;
 	}
-	
-	String(const char* line)
+
+	String(const char* str)
 	{
-		this->line = line;
+		this->size = strlen(str) + 1;
+		this->str = new char[size];
+		for (int i = 0; str[i]; i++) this->str[i] = str[i];
+		cout << "1ArgConstructor:\t" << this << endl;
 	}
-	
-	String(char* line)
+
+	String(const String& other)
 	{
-		this->line = line;
+		this->size = other.size;
+		this->str = new char[size] {};
+		for (int i = 0; i < size; i++) this->str[i] = other.str[i];
+		cout << "CopyConstructor:\t" << this << endl;
+	}
+
+	String(String&& other)
+	{
+		// Shallow Copy
+		this->size = other.size;
+		this->str = other.str;
+		//MoveConstructor работает противоположно CopyConstructor
+
+		other.str = nullptr;
+		other.size = 0;
+		cout << "MoveConstructor:\t" << this << endl;
+
 	}
 
 	~String()
 	{
+		delete[] str;
 		cout << "Destructor:\t\t" << this << endl;
+	}
+
+	// Methods
+	void print()const
+	{
+		cout << "Size:\t" << size << endl;
+		cout << "Str:\t" << this << endl;
 	}
 	
 	// Operators
-
-	String operator=(const char* other)
+	String& operator=(const String& other)
 	{
-		int count = 0;
-		while (other[count]) { count++; }
-
-		char* line = new char[count + 1] {};
-		for (int i = 0; i < count; i++) line[i] = other[i];
-		line[count] = '\0';
-
-		this->set_string(line);
-
-		delete[] line;
-
+		if (this == &other) return *this;
+		delete[] this->str;
+		this->size = other.size;
+		this->str = new char[size] {};
+		for (int i = 0; i < size; i++) this->str[i] = other.str[i];
+		cout << "CopyAssignment:\t\t" << this << endl;
 		return *this;
 	}
 
+	String& operator=(String&& other)
+	{
+		if (this == &other) return *this;
+		delete[] this->str;
+		this->size = other.size;
+		this->str = other.str;
+		other.str = nullptr;
+		other.size = 0;
+		cout << "MoveAssignment:\t\t" << this << endl;
+		return *this;
+	}
+
+	char operator[](int i) const
+	{
+		return str[i];
+	}
+
+	char& operator[](int i)
+	{
+		return str[i];
+	}
+
+	/*
 	String operator=(char* other)
 	{
 		int count = 0;
@@ -81,35 +138,35 @@ public:
 		os << endl;
 		return os;
 	}
+	*/
+
 };
 
-String operator+(const String& left_str, const String& right_str)
+
+String operator+(const String& left, const String& right)
 {
-	const char* left = left_str.get_string();
-	const char* right = right_str.get_string();
+	String cat(left.get_size() + left.get_size() - 1);
+	for (int i = 0; i < left.get_size(); i++)
+	{
+		cat[i] = left[i];
+	}
+		
+	for (int i = 0; i < right.get_size(); i++)
+	{
+		cat[i+left.get_size() - 1] = right[i];
+	}
 
-	int count_left = 0;
-	int count_right = 0;
-
-	while (left[count_left]) { count_left++; }
-	while (right[count_right]) { count_right++; }
-
-	char* line = new char[count_left + count_right + 2];
-	for (int i = 0; i < count_left; i++) line[i] = left[i];
-	line[count_left] = ' ';
-	for (int i = 0; i < count_right; i++) line[count_left + 1 + i] = right[i];
-	line[count_left + count_right + 1] = '\0';
-	
-	String buffer(line);
-	//delete[] line;
-	return buffer;
+	return cat;
 }
+
+
 
 std::ostream& operator<<(std::ostream& os, const String& obj)
 {
-	return obj.print(os);
+	return os<<obj.get_str();
 }
 
+/*
 std::istream& operator>>(std::istream& is, String& obj)
 {
 	const int SIZE = 256;
@@ -128,15 +185,39 @@ std::istream& operator>>(std::istream& is, String& obj)
 	delete[] line;
 	return is;
 }
+*/
+
+//#define CONSTRUCTORS_CHECK
 
 void main()
 {
 	setlocale(LC_ALL, "");
 
+#if defined CONSTRUCTORS_CHECK
+	String str; // DefaultConstructor
+	str.print();
+
+	String str1 = "Hello"; // 1ArgConstructor
+	cout << str1 << endl;
+	
+	String str2 = str1; // CopyConstructor
+	cout << str2 << endl;
+
+	String str3; // DefaultConstructor
+	str3 = str2; // CopyAssignment
+	cout << str3 << endl;
+#endif
+
+
 	String str1 = "Hello";
+	cout << str1 << endl;
 	String str2 = "World";
-	String str3 = str1 + str2;
+	cout << str2 << endl;
+	str1 = str1;
+	cout << str1 << endl;
+
+	String str3; 
+	str3 = str1 + str2;
 	cout << str3 << endl;
 
-	delete[] str3.get_string();
 }
