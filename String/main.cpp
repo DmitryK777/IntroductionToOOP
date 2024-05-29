@@ -208,7 +208,6 @@ void main()
 	cout << str3 << endl;
 #endif
 
-
 	String str1 = "Hello";
 	cout << str1 << endl;
 	String str2 = "World";
