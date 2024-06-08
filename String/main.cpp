@@ -29,7 +29,7 @@ public:
 	{
 		return this->size;
 	}
-	
+	// 
 	// Constructors
 	explicit String(int size = 80)
 	{
